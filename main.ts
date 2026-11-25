@@ -23,6 +23,12 @@ if (TEXT.includes("\n") || TEXT.includes("\r")) {
   throw new Error("Text must be a single line (no newline characters)");
 }
 
+// A tab or other control character would render invisibly on a lock screen
+// and is not part of a text message; reject any of them outright.
+if (/[\u0000-\u001F\u007F]/.test(TEXT)) {
+  throw new Error("Text must not contain control characters");
+}
+
 mkdirSync("/output", { recursive: true });
 writeFileSync("/output/entry.txt", TEXT, "utf8");
 
